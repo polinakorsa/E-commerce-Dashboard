@@ -1,25 +1,39 @@
-// import { useState } from 'react';
+import CreateEditUserForm from './CreateEditUserForm.tsx';
 
-export default function TableHeader({ columns }) {
-    // const [selectedAll, setSelectedAll] = useState([]);
+export default function TableHeader({ columns, onCreate }) {
 
     return (
-        <div className='text-gray-500 text-xl absolute flex items-center justify-between px-2 w-[1420px] h-[60px] rounded-xl bg-gray-100 outline outline-1 outline-gray-400'>
-            <input
-                className='absolute left-10 w-6 h-6 accent-indigo-500 cursor-pointer'
-                type='checkbox'
-                id='checkbox'
-            />
+        <div className="flex items-center bg-gray-100 h-16 rounded-t-xl border-b border-gray-300">
+            <div className="w-16 flex justify-center">
+                <input
+                    type="checkbox"
+                    className="w-5 h-5 accent-indigo-600 rounded cursor-pointer focus:ring-indigo-500"
+                    id="select-all"
+                />
+            </div>
 
-            <div className='text-gray-500 text-xl absolute flex items-center justify-between px-25'>
-                <ul className='flex items-center space-x-35 text-xl translate-x-[60px]'>
+            <div className="flex-1 flex items-center px-8">
+                <ul className="flex items-center space-x-12 text-lg text-gray-600 font-medium">
                     {columns.map((column, index) => (
-                        <li className='w-[100px]' key={index}>
+                        <li key={index} className="w-48 text-left">
                             {column}
                         </li>
                     ))}
                 </ul>
+
             </div>
+            <button className="flex justify-baseline w-100 text-center text-3xl text-black">Create User</button>
+            {onCreate && (
+                <CreateEditUserForm
+                    user={editUser}
+                    onSave={handleSave}
+                    onCancel={handleCancel}
+                />
+
+            )
+                }
         </div>
     );
 }
+
+

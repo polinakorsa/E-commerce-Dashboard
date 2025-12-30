@@ -4,8 +4,6 @@ import Sidebar from './Sidebar.tsx';
 import AbstractBackground from './AbstractBackground.tsx';
 import Footer from './Footer.tsx';
 
-//  Log in + Log Out Auth | Dark mode
-
 function Layout() {
 
     return (

@@ -1,26 +1,19 @@
 import DeletePopUp from './DeletePopUp.tsx';
 import {useState} from "react";
-import EditMode from './EditMode.tsx';
 
-export default function ActionButtons({ userId, onDelete, editId, onEdit }) {
+export default function ActionButtons({ item, onDelete, onEdit }) {
 
     const [showDeletePopUp, setShowDeletePopUp] = useState(false);
-    const [showEditMode, setShowEditMode] = useState(false);
 
     const handleConfirmDelete = () => {
-        onDelete(userId);
+        onDelete(item.id);
         setShowDeletePopUp(false);
     };
-
-    const handleEditMode = () => {
-        onEdit(editId);
-        setShowEditMode(false);
-    }
 
     return (
         <div className='relative bottom-4'>
 
-            <button onClick={() => {setShowEditMode(true)}}>
+            <button  onClick={() => onEdit(item)}>
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
@@ -46,11 +39,6 @@ export default function ActionButtons({ userId, onDelete, editId, onEdit }) {
             {showDeletePopUp && (<DeletePopUp onCancel={() => setShowDeletePopUp(false)}
                                               onDelete={handleConfirmDelete}
             />
-            )}
-
-            {showEditMode && (<EditMode onCancel={() => setShowEditMode(false)}
-                                              onSave={handleEditMode}
-                />
             )}
         </div>
     );
