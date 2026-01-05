@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
-import TableHeader from './TableHeader.tsx';
-import ActionButtons from './ActionButtons.tsx';
+import TableHeaderProducts from './TableHeaderProducts.tsx';
+import ActionButtonsProducts from './ActionButtonsProducts.tsx';
 import CreateEditProductsForm from './CreateEditProductsForm.tsx';
+import Sidebar from "./Sidebar.tsx";
 
 
 const columns = ['Title', 'Category', 'Price', 'Rating', 'Availability'];
 
-export default function Products() {
+export default function Products({onLogout}) {
     const [products, setProducts] = useState([]);
     const [editProduct, setEditProduct] = useState(null);
+    const [showCreateEdit, setShowCreateEdit] = useState(false);
 
     useEffect(() => {
-        fetch('https://dummyjson.com/products')
+        fetch('https://dummyjson.com/products?limit=25')
             .then((res) => res.json())
             .then((data) => {
                 setProducts(data.products);
@@ -34,62 +36,101 @@ export default function Products() {
         setEditProduct(product);
     };
 
-    const handleSave = (updatedProductData) => {
-        setProducts((prev) =>
-            prev.map((product) => {
-                if(updatedProductData) {
-                product.id === updatedProductData.id
-            } else {
-                product
-            }
-            })
-        );
-        setEditProduct(null);
+    const handleSave = async (updatedProductData) => {
+        const res = await fetch (`https://dummyjson.com/products/${updatedProductData.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedProductData),
+        })
+        if (res.ok) {
+            const savedProduct = await res.json();
+
+            setProducts((prev) =>
+                prev.map((product) =>
+                    product.id === savedProduct.id ? savedProduct : product
+                )
+            );
+
+            setEditProduct(null);
+        } else {
+            console.log("error")
+        }
     };
 
-    const handleCancel = () => {
-        setEditProduct(null);
+    const handleCreateProduct = async (newProduct) => {
+        const res = await fetch (`https://dummyjson.com/products/add/${newProduct}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newProduct),
+        })
+        if (res.ok) {
+            const addedProduct = await res.json();
+            setProducts(prev => [
+                { ...addedProduct },
+                ...prev
+            ]);
+            setShowCreateEdit(false);
+        }
     };
 
     return (
-        <div className='bg-stone-50 absolute left-80 top-40 w-[1420px] h-[2180px] rounded-xl'>
-            {editProduct ? (
+        <div className="max-w-7xl mx-auto my-12  bg-white rounded-xl">
+            <Sidebar/>
+            <button
+                onClick={onLogout}
+                className="absolute right-8 top-8 px-6 py-3 text-3xl font-semibold"
+            >
+                Log out
+            </button>
+            {(editProduct || showCreateEdit) && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
                 <CreateEditProductsForm
-                    product={editProduct}
+                    product={editProduct ?? {}}
                     onSave={handleSave}
-                    onCancel={handleCancel}
+                    onCreate={handleCreateProduct}
+                    onCancel={() => {
+                        setEditProduct(null);
+                        setShowCreateEdit(false);
+                    }}
                 />
-            ) : (
-                <>
-            <TableHeader columns={columns} />
+                </div>
+                </div>
+            )}
 
-            <ul className='relative top-30 space-y-10 text-xl'>
+            <TableHeaderProducts
+                columns={columns}
+                onOpenForm={() => {
+                    setEditProduct(null);
+                    setShowCreateEdit(true);
+                }}
+            />
+
+            <ul className="text-xl">
                 {products.map((product) => (
-                    <li key={product.id}>
-                        <input className='absolute left-10 w-6 h-6 cursor-pointer' type='checkbox' />
+                    <li key={product.id}
+                        className="grid grid-cols-[55px_250px_265px_230px_240px_150px_50px] items-center py-8 px-6.5 hover:bg-gray-50 transition">
 
-                            <>
-                        <span className='absolute left-30 w-50'>{product.title}</span>
-                        <span className='absolute left-63 w-100'>{product.category}</span>
-                        <span className='absolute left-169'>{product.price}</span>
-                        <span className='absolute left-228'>{product.rating}</span>
-                        <span className='absolute left-284'>
-              {product.availabilityStatus}
-            </span>
+                        <div className="flex justify-center">
+                        <input className=' w-6 h-6 cursor-pointer' type='checkbox' />
+                        </div>
 
-                        <ActionButtons
-                            item={product}
+                        <div className='px-8 w-[250px] truncate'>{product.title}</div>
+                        <div>{product.category}</div>
+                        <div>{product.price}</div>
+                        <div>{product.rating}</div>
+                        <div>{product.availabilityStatus}</div>
+
+                        <div className="flex justify-end">
+                            <ActionButtonsProducts
+                            product={product}
                             onEdit={handleEdit}
                             onDelete={handleDelete}
-
                         />
-                            </>
-
+                        </div>
                     </li>
                 ))}
             </ul>
-    </>
-)}
         </div>
     );
 }

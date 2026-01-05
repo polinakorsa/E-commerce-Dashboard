@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
-import TableHeader from './TableHeader.tsx';
-import ActionButtons from './ActionButtons.tsx';
+import TableHeaderUsers from './TableHeaderUsers.tsx';
+import ActionButtonsUsers from './ActionButtonsUsers.tsx';
 import CreateEditUserForm from './CreateEditUserForm.tsx';
+import Sidebar from "./Sidebar.tsx";
 
-const columns = ['First Name', 'Last Name', 'Age', 'Email'];
+const columns = ['First Name', 'Last Name', 'Age', 'Username'];
 
-export default function Users() {
+export default function Users({onLogout}) {
     const [users, setUsers] = useState([]);
     const [editUser, setEditUser] = useState(null);
-    const [createUser, setCreateUser] = useState(null);
+    const [showCreateEdit, setShowCreateEdit] = useState(false);
 
     useEffect(() => {
-        fetch('https://dummyjson.com/users')
+        fetch('https://dummyjson.com/users?limit=25')
             .then((res) => res.json())
             .then((data) => {
                 setUsers(data.users);
@@ -38,77 +39,103 @@ export default function Users() {
     const handleSave = async (updatedUserData) => {
         const res = await fetch (`https://dummyjson.com/users/${updatedUserData.id}`, {
             method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedUserData),
         })
-        if (res.status === 200) {
+        if (res.ok) {
+            const savedUser = await res.json();
+
             setUsers((prev) =>
-                prev.map((user) => {
-                    if(updatedUserData){
-                        user.id === updatedUserData.id
-                    } else {
-                        user
-                    }
-                })
+                prev.map((user) =>
+                    user.id === savedUser.id ? savedUser : user
+                )
             );
+
             setEditUser(null);
         } else {
             console.log("error")
         }
     };
 
-    const handleCancel = () => {
-        setEditUser(null);
+    const handleCreateUser = async (newUser) => {
+        const res = await fetch (`https://dummyjson.com/users/add/${newUser}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser),
+        })
+        if (res.ok) {
+            const addedUser = await res.json();
+            setUsers(prev => [
+                { ...addedUser },
+                ...prev
+        ]);
+            setShowCreateEdit(false);
+        }
     };
 
-    // const handleCreateForm = () => {
-    //     setCreateUser({}); // Empty object triggers "Create" mode in the form
-    // };
-    //
-    // const handleCreate = (user) => {
-    //     setUsers(
-    //         [
-    //             ...users,
-    //             {}
-    //         ]
-    //     )
-    // }
-
     return (
-        <div className='bg-stone-50 absolute left-80 top-40 w-[1420px] h-[2180px] rounded-xl'>
-            {editUser ? (
-                <CreateEditUserForm
-                    user={editUser}
-                    onSave={handleSave}
-                    onCancel={handleCancel}
+            <div className="max-w-5xl mx-auto my-12  bg-white rounded-xl">
+             <Sidebar/>
+                <button
+                    onClick={onLogout}
+                    className="absolute right-8 top-8 px-6 py-3 text-3xl font-semibold"
+                >
+                    Log out
+                </button>
+                {(editUser || showCreateEdit) && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+                            <CreateEditUserForm
+                                user={editUser ?? {}}
+                                onSave={handleSave}
+                                onCreate={handleCreateUser}
+                                onCancel={() => {
+                                    setEditUser(null);
+                                    setShowCreateEdit(false);
+                                }}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                <TableHeaderUsers
+                    columns={columns}
+                    onOpenForm={() => {
+                        setEditUser(null);
+                        setShowCreateEdit(true);
+                    }}
                 />
-            ) : (
-                <>
-            <TableHeader columns={columns} />
-            <ul className='relative top-30 space-y-10 text-xl'>
-                {users.map((user) => (
 
-                    <li key={user.id}>
-                        <input
-                            className='absolute left-10 w-6 h-6 cursor-pointer'
-                            type='checkbox'
-                        />
-                            <>
-                                <span className='absolute left-0.5 w-100'>{user.firstName}</span>
-                                <span className='absolute left-60 w-100'>{user.lastName}</span>
-                                <span className='absolute left-170'>{user.age}</span>
-                                <span className='absolute left-228'>{user.email}</span>
+                <ul className="text-xl">
+                    {users.map((user) => (
+                        <li
+                            key={user.id}
+                            className="grid grid-cols-[55px_250px_215px_160px_150px_150px] items-center py-8 px-6.5 hover:bg-gray-50 transition"                        >
 
-                                <ActionButtons
-                                    item={user}
+                            <div className="flex justify-center">
+                                <input
+                                    type="checkbox"
+                                    className=" w-6 h-6 cursor-pointer"
+                                />
+                            </div>
+
+                            <div className="px-8 text-gray-900">{user.firstName}</div>
+                            <div className="text-gray-700">{user.lastName}</div>
+                            <div className="text-gray-600">{user.age}</div>
+                            <div className="text-gray-600">{user.username}</div>
+
+
+                            <div className="flex justify-end col-span-1">
+                                <ActionButtonsUsers
+                                    user={user}
                                     onEdit={handleEdit}
                                     onDelete={handleDelete}
                                 />
-
-                            </>
-                    </li>
-                ))}
-            </ul>
-                </>
-           )}
-        </div>
-    );
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+    )
 }
+

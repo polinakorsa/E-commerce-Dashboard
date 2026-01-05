@@ -1,9 +1,11 @@
 function Footer() {
     return (
-        <footer className='absolute top-610 left-165 text-center w-300 text-3xl'>
-            <p className='text-gray-900  absolute bottom-6'>
-                Use this dashboard to view your current business processes!
-            </p>
+        <footer className="w-full py-12 mt-12 ">
+            <div className="max-w-7xl mx-auto px-8">
+                <p className="text-center text-3xl text-gray-900 font-medium">
+                    Use this dashboard to view your current business processes!
+                </p>
+            </div>
         </footer>
     );
 }

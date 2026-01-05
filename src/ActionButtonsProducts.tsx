@@ -1,33 +1,37 @@
 import DeletePopUp from './DeletePopUp.tsx';
 import {useState} from "react";
 
-export default function ActionButtons({ item, onDelete, onEdit }) {
+export default function ActionButtonsProducts({ product, onDelete, onEdit }) {
 
     const [showDeletePopUp, setShowDeletePopUp] = useState(false);
 
     const handleConfirmDelete = () => {
-        onDelete(item.id);
+        onDelete(product.id);
         setShowDeletePopUp(false);
     };
 
     return (
-        <div className='relative bottom-4'>
+         <div className="flex gap-2">
 
-            <button  onClick={() => onEdit(item)}>
+            <button onClick={() => onEdit(product)}
+                     className="rounded-md hover:bg-indigo-100 transition"
+            >
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
                     viewBox='0 0 24 24'
-                    className='absolute left-329 h-6 cursor-pointer rounded-3xl  hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                    className="h-6 w-6 text-indigo-600"
                 >
                     <path d='M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zM21.41 6.34c.38-.38.38-1.01 0-1.39l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.85z' />
                 </svg>
             </button>
 
 
-            <button onClick={() => {setShowDeletePopUp(true)}}>
+            <button onClick={() => {setShowDeletePopUp(true)}}
+                    className=" rounded-md hover:bg-red-100 transition"
+            >
                 <svg
                     xmlns='http://www.w3.org/2000/svg'
-                    className=' absolute left-335 h-6 rounded-2xl cursor-pointer hover:bg-indigo-500 focus-visible:outline-8 focus-visible:outline-offset-8 focus-visible:outline-indigo-600'
+                    className="h-6 w-6 text-red-600"
                     viewBox='0 0 50 50'
                     width='50px'
                     height='50px'
@@ -38,7 +42,7 @@ export default function ActionButtons({ item, onDelete, onEdit }) {
 
             {showDeletePopUp && (<DeletePopUp onCancel={() => setShowDeletePopUp(false)}
                                               onDelete={handleConfirmDelete}
-            />
+                />
             )}
         </div>
     );

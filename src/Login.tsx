@@ -1,44 +1,65 @@
-export default function Login() {
+import {useState} from "react";
+
+export default function Login({onLogin, isLoading}) {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!username || !password) {
+            alert('Please enter both username and password');
+            return;
+        }
+        onLogin(username, password);
+    };
+
     return (
         <>
-                <div className=" absolute left-190 top-60 w-[500px] grid gap-8 bg-white rounded-3xl shadow-2xl overflow-hidden">
-                    <div className="p-10 md:p-16 flex flex-col justify-center">
-                        <div className="text-center mb-10">
-                            <h1 className="text-3xl font-bold text-gray-800">Welcome Back!</h1>
+            <div className="flex justify-center pt-32">
+                <div className="h-[500px] w-[500px] bg-white rounded-3xl shadow-2xl overflow-hidden">
+                    <div className="p-10 flex flex-col text-center">
+                            <h1 className="text-4xl font-bold text-gray-800">Welcome Back!</h1>
                             <p className="text-gray-600 mt-2">Sign in to continue to your account.</p>
                         </div>
 
-                        <form className="space-y-6">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <form  onSubmit={handleSubmit}  className="space-y-6">
+                            <div className="flex flex-col text-xl text-center items-center">
+                                <label className="block text-2xl text-centerfont-medium text-gray-700 mb-2">
                                     Username
                                 </label>
                                 <input
-                                    type="email"
-                                    id="email"
-                                    placeholder="emilyjones@gmail.com"
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                    type="text"
+                                    id="username"
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    placeholder="emilys"
+                                    className="w-[400px] px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                    disabled={isLoading}
                                 />
                             </div>
 
-                            <div>
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                            <div className="flex flex-col text-center items-center">
+                                <label htmlFor="password" className="block text-center text-2xl font-medium text-gray-700 mb-2">
                                     Password
                                 </label>
                                 <input
                                     type="password"
                                     id="password"
                                     placeholder="••••••••"
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-[400px] px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                                    disabled={isLoading}
                                 />
                             </div>
 
+
+                            <div className="flex text-2xl flex-col text-center items-center">
                             <button
                                 type="submit"
-                                className="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-md transition transform hover:scale-105"
+                                className="w-[400px] py-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl shadow-md transition transform hover:scale-105"
                             >
                                 Login
                             </button>
+                            </div>
                         </form>
                  </div>
                 </div>

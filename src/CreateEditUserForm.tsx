@@ -35,7 +35,7 @@ export default function CreateEditUserForm({ user, onSave, onCancel, onCreate}: 
 
     return (
 
-        <div >
+        <div>
             <div className="p-10 md:p-16 flex flex-col justify-center">
                 <form onSubmit={submitEditUserData} className="space-y-6">
                     <div>
