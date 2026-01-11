@@ -1,50 +1,56 @@
 import DeletePopUp from './DeletePopUp.tsx';
-import {useState} from "react";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setActiveUser, toggleModalVisibility } from './store/actions.ts';
 
-export default function ActionButtonsUsers({ user, onDelete, onEdit }) {
+export default function ActionButtonsUsers({ user }) {
+  const [showDeletePopUp, setShowDeletePopUp] = useState(false);
+  const dispatch = useDispatch();
 
-    const [showDeletePopUp, setShowDeletePopUp] = useState(false);
+  const openDeletePopUp = () => {
+    dispatch(setActiveUser(user));
+    setShowDeletePopUp(true);
+  };
 
-    const handleConfirmDelete = () => {
-        onDelete(user.id);
-        setShowDeletePopUp(false);
-    };
+  const closeDeletePopUp = () => {
+    dispatch(setActiveUser(null));
+    setShowDeletePopUp(false);
+  };
 
-    return (
-        <div className="flex px-7 gap-0.5 items-center">
-            <button
-                onClick={() => onEdit(user)}
-                className="p-2 rounded-md hover:bg-indigo-100 transition"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    className="h-6 w-6 text-indigo-600"
-                >
-                    <path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zM21.41 6.34c.38-.38.38-1.01 0-1.39l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.85z" />
-                </svg>
-            </button>
+  const handleModalOpen = () => {
+    dispatch(setActiveUser(user));
+    dispatch(toggleModalVisibility());
+  };
 
+  return (
+    <div className="flex px-7 gap-0.5 items-center">
+      <button
+        onClick={handleModalOpen}
+        className="p-2 rounded-md hover:bg-indigo-100 transition"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          className="h-6 w-6 text-indigo-600"
+        >
+          <path d="M3 17.25V21h3.75l11.06-11.06-3.75-3.75L3 17.25zM21.41 6.34c.38-.38.38-1.01 0-1.39l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.85z" />
+        </svg>
+      </button>
 
-            <button
-                onClick={() => setShowDeletePopUp(true)}
-                className=" rounded-md hover:bg-red-100 transition"
-            >
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 50 50"
-                    className="h-6 w-6 text-red-600"
-                >
-                    <path d="M21 0C19.355 0 18 1.355 18 3L18 5H10.187C10.062 4.977 9.937 4.977 9.813 5L8 5C7.968 5 7.937 5 7.906 5 7.355 5.027 6.926 5.496 6.953 6.047 6.981 6.598 7.449 7.027 8 7H9.094L12.688 47.5C12.813 48.898 14.004 50 15.406 50H34.594C35.996 50 37.188 48.898 37.312 47.5L40.906 7H42C42.36 7.004 42.695 6.816 42.879 6.504 43.059 6.191 43.059 5.809 42.879 5.496 42.695 5.184 42.36 4.996 42 5H32V3C32 1.355 30.645 0 29 0H21ZM21 2H29C29.563 2 30 2.438 30 3V5H20V3C20 2.438 20.437 2 21 2ZM11.094 7H38.906L35.312 47.344C35.281 47.691 34.91 48 34.594 48H15.406C15.089 48 14.719 47.691 14.688 47.344ZM18.906 9.969C18.863 9.977 18.82 9.988 18.781 10 18.316 10.105 17.988 10.523 18 11V44C17.996 44.359 18.184 44.695 18.496 44.879 18.809 45.058 19.191 45.058 19.504 44.879 19.816 44.695 20.004 44.359 20 44V11C20.012 10.711 19.895 10.434 19.688 10.238 19.477 10.039 19.191 9.941 18.906 9.969ZM24.906 9.969C24.863 9.977 24.82 9.988 24.781 10 24.316 10.105 23.988 10.523 24 11V44C23.996 44.359 24.184 44.695 24.496 44.879 24.809 45.058 25.191 45.058 25.504 44.879 25.816 44.695 26.004 44.359 26 44V11C26.012 10.711 25.895 10.434 25.688 10.238 25.477 10.039 25.191 9.941 24.906 9.969ZM30.906 9.969C30.863 9.977 30.82 9.988 30.781 10 30.316 10.105 29.988 10.523 30 11V44C29.996 44.359 30.184 44.695 30.496 44.879 30.809 45.058 31.191 45.058 31.504 44.879 31.816 44.695 32.004 44.359 32 44V11C32.012 10.711 31.895 10.434 31.688 10.238 31.477 10.039 31.191 9.941 30.906 9.969Z" />
-                </svg>
-            </button>
+      <button
+        onClick={openDeletePopUp}
+        className=" rounded-md hover:bg-red-100 transition"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 50 50"
+          className="h-6 w-6 text-red-600"
+        >
+          <path d="M21 0C19.355 0 18 1.355 18 3L18 5H10.187C10.062 4.977 9.937 4.977 9.813 5L8 5C7.968 5 7.937 5 7.906 5 7.355 5.027 6.926 5.496 6.953 6.047 6.981 6.598 7.449 7.027 8 7H9.094L12.688 47.5C12.813 48.898 14.004 50 15.406 50H34.594C35.996 50 37.188 48.898 37.312 47.5L40.906 7H42C42.36 7.004 42.695 6.816 42.879 6.504 43.059 6.191 43.059 5.809 42.879 5.496 42.695 5.184 42.36 4.996 42 5H32V3C32 1.355 30.645 0 29 0H21ZM21 2H29C29.563 2 30 2.438 30 3V5H20V3C20 2.438 20.437 2 21 2ZM11.094 7H38.906L35.312 47.344C35.281 47.691 34.91 48 34.594 48H15.406C15.089 48 14.719 47.691 14.688 47.344ZM18.906 9.969C18.863 9.977 18.82 9.988 18.781 10 18.316 10.105 17.988 10.523 18 11V44C17.996 44.359 18.184 44.695 18.496 44.879 18.809 45.058 19.191 45.058 19.504 44.879 19.816 44.695 20.004 44.359 20 44V11C20.012 10.711 19.895 10.434 19.688 10.238 19.477 10.039 19.191 9.941 18.906 9.969ZM24.906 9.969C24.863 9.977 24.82 9.988 24.781 10 24.316 10.105 23.988 10.523 24 11V44C23.996 44.359 24.184 44.695 24.496 44.879 24.809 45.058 25.191 45.058 25.504 44.879 25.816 44.695 26.004 44.359 26 44V11C26.012 10.711 25.895 10.434 25.688 10.238 25.477 10.039 25.191 9.941 24.906 9.969ZM30.906 9.969C30.863 9.977 30.82 9.988 30.781 10 30.316 10.105 29.988 10.523 30 11V44C29.996 44.359 30.184 44.695 30.496 44.879 30.809 45.058 31.191 45.058 31.504 44.879 31.816 44.695 32.004 44.359 32 44V11C32.012 10.711 31.895 10.434 31.688 10.238 31.477 10.039 31.191 9.941 30.906 9.969Z" />
+        </svg>
+      </button>
 
-            {showDeletePopUp && (
-                <DeletePopUp
-                    onCancel={() => setShowDeletePopUp(false)}
-                    onDelete={handleConfirmDelete}
-                />
-            )}
-        </div>
-    );
+      {showDeletePopUp && <DeletePopUp onCancel={closeDeletePopUp} />}
+    </div>
+  );
 }
