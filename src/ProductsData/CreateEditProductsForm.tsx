@@ -56,10 +56,8 @@ export default function CreateEditProductsForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(product),
       });
-      if (res.ok) {
-        const savedUser = await res.json();
-        dispatch(editProduct(savedUser));
-      }
+      const savedProduct = await res.json();
+      dispatch(editProduct(savedProduct));
     } catch (error) {
       dispatch(getProductsError(error));
     }
