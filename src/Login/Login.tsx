@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import AbstractBackground from './AbstractBackground.tsx';
+import AbstractBackground from '../Layout/AbstractBackground.tsx';
 
 export default function Login() {
   const [username, setUsername] = useState('');

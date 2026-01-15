@@ -54,7 +54,86 @@ export const toggleModalVisibility = () => {
   };
 };
 
-export const toggleUserSelection = (userId) => ({
-  type: 'TOGGLE_USER_SELECTION',
-  payload: userId,
+export const userSelection = (payload) => ({
+  type: 'USER_SELECTION',
+  payload,
+});
+
+export const bulkUserSelection = () => ({
+  type: 'BULK_USER_SELECTION',
+});
+
+export const deleteALLUserSelection = (payload) => ({
+  type: 'BULK_DELETE_USER_SELECTION',
+  payload,
+});
+
+//...Products
+
+export const getProductsLoading = () => {
+  return {
+    type: 'GET_PRODUCTS_LOADING',
+  };
+};
+
+export const getProductsSuccess = (payload) => {
+  return {
+    type: 'GET_PRODUCTS_SUCCESS',
+    payload,
+  };
+};
+
+export const getProductsError = (payload) => {
+  return {
+    type: 'GET_PRODUCTS_ERROR',
+    payload,
+  };
+};
+
+export const deleteProduct = (payload) => {
+  return {
+    type: 'DELETE_PRODUCT',
+    payload,
+  };
+};
+
+export const setActiveProduct = (payload) => {
+  return {
+    type: 'SET_ACTIVE_PRODUCT',
+    payload,
+  };
+};
+
+export const editProduct = (payload) => {
+  return {
+    type: 'EDIT_PRODUCT',
+    payload,
+  };
+};
+
+export const createProduct = (payload) => {
+  return {
+    type: 'CREATE_PRODUCT',
+    payload,
+  };
+};
+
+export const toggleModalVisibilityProduct = () => {
+  return {
+    type: 'TOGGLE_MODAL_VISIBILITY_PRODUCT',
+  };
+};
+
+export const productSelection = (payload) => ({
+  type: 'PRODUCT_SELECTION',
+  payload,
+});
+
+export const bulkProductsSelection = () => ({
+  type: 'BULK_PRODUCTS_SELECTION',
+});
+
+export const deleteAllProductsSelection = (payload) => ({
+  type: 'BULK_DELETE_PRODUCTS_SELECTION',
+  payload,
 });

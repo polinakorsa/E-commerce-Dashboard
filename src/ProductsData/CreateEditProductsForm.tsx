@@ -1,81 +1,95 @@
-import { useEffect, useState } from 'react';
-import {
-  createUser,
-  editUser,
-  setActiveUser,
-  toggleModalVisibility,
-} from './store/actions.ts';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  createProduct,
+  editProduct,
+  getProductsError,
+  getProductsLoading,
+  setActiveProduct,
+  toggleModalVisibilityProduct,
+} from '../store/actions.ts';
 
-export default function CreateEditUserForm() {
+export default function CreateEditProductsForm() {
   const dispatch = useDispatch();
-  const activeUser = useSelector((state) => state.usersReducer.activeUser);
-  const [user, setUser] = useState(null);
+  const activeProduct = useSelector(
+    (state) => state.productsReducer.activeProduct
+  );
+  const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    if (activeUser) {
-      setUser(activeUser);
+    if (activeProduct) {
+      setProduct(activeProduct);
     } else {
-      setUser({
-        firstName: '',
-        lastName: '',
-        age: 0,
-        username: '',
+      setProduct({
+        title: '',
+        category: '',
+        price: 0,
+        rating: 0,
+        availabilityStatus: 'In Stock',
       });
     }
-  }, [dispatch, activeUser]);
+  }, [dispatch, activeProduct]);
 
-  const handleCreateUser = async () => {
-    const res = await fetch(`https://dummyjson.com/users/add`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(user),
-    });
+  const handleCreateProduct = async () => {
+    dispatch(getProductsLoading());
+    try {
+      const res = await fetch('https://dummyjson.com/products/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(product),
+      });
 
-    if (res.ok) {
-      const addedUser = await res.json();
-      dispatch(createUser(addedUser));
+      if (res.ok) {
+        const addedProduct = await res.json();
+        dispatch(createProduct(addedProduct));
+      }
+    } catch (error) {
+      dispatch(getProductsError(error));
     }
   };
 
-  const handleEditUser = async () => {
-    const res = await fetch(`https://dummyjson.com/users/${user.id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(user),
-    });
-    if (res.ok) {
-      const savedUser = await res.json();
-      dispatch(editUser(savedUser));
-    } else {
-      new Error('Failed to edit user');
+  const handleEditProduct = async () => {
+    dispatch(getProductsLoading());
+    try {
+      const res = await fetch(`https://dummyjson.com/products/${product.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(product),
+      });
+      if (res.ok) {
+        const savedUser = await res.json();
+        dispatch(editProduct(savedUser));
+      }
+    } catch (error) {
+      dispatch(getProductsError(error));
     }
   };
 
-  const handleUserChange = (event) => {
-    setUser((prevState) => ({
+  const handleProductChange = (event) => {
+    setProduct((prevState) => ({
       ...prevState,
       [event.target.name]:
-        event.target.name === 'age'
+        event.target.name === 'price' || event.target.name === 'rating'
           ? Number(event.target.value)
           : event.target.value,
     }));
+    console.log(event.target.value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (user.id) {
-      handleEditUser();
+    if (product.id) {
+      handleEditProduct();
     } else {
-      handleCreateUser();
+      handleCreateProduct();
     }
     onCancel();
   };
 
   const onCancel = () => {
-    dispatch(toggleModalVisibility());
-    dispatch(setActiveUser(null));
+    dispatch(toggleModalVisibilityProduct());
+    dispatch(setActiveProduct(null));
   };
 
   return (
@@ -84,13 +98,13 @@ export default function CreateEditUserForm() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              First Name
+              Title
             </label>
             <input
               type="text"
-              name="firstName"
-              value={user?.firstName}
-              onChange={handleUserChange}
+              name="title"
+              value={product?.title}
+              onChange={handleProductChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl
                                        focus:outline-none focus:ring-2 focus:ring-purple-500
                                        focus:border-transparent transition"
@@ -99,13 +113,13 @@ export default function CreateEditUserForm() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Last Name
+              Category
             </label>
             <input
               type="text"
-              name="lastName"
-              value={user?.lastName}
-              onChange={handleUserChange}
+              name="category"
+              value={product?.category}
+              onChange={handleProductChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl
                                        focus:outline-none focus:ring-2 focus:ring-purple-500
                                        focus:border-transparent transition"
@@ -114,13 +128,13 @@ export default function CreateEditUserForm() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Age
+              Price
             </label>
             <input
               type="number"
-              name="age"
-              value={user?.age}
-              onChange={handleUserChange}
+              name="price"
+              value={product?.price}
+              onChange={handleProductChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl
                                        focus:outline-none focus:ring-2 focus:ring-purple-500
                                        focus:border-transparent transition"
@@ -129,13 +143,28 @@ export default function CreateEditUserForm() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Username
+              Rating
+            </label>
+            <input
+              type="number"
+              name="rating"
+              value={product?.rating}
+              onChange={handleProductChange}
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl
+                                       focus:outline-none focus:ring-2 focus:ring-purple-500
+                                       focus:border-transparent transition"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Availability Status
             </label>
             <input
               type="text"
-              name="username"
-              value={user?.username}
-              onChange={handleUserChange}
+              name="availabilityStatusbrand"
+              value={product?.availabilityStatus}
+              onChange={handleProductChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl
                                        focus:outline-none focus:ring-2 focus:ring-purple-500
                                        focus:border-transparent transition"

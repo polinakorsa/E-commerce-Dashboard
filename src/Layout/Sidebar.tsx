@@ -28,7 +28,7 @@ export default function Sidebar() {
         <nav className="absolute left-9 top-40 rounded-md text-2xl">
           <ul className="space-y-4">
             <li className="cursor-pointer hover:text-purple-600">
-              <NavLink to="/usersReducer">Users</NavLink>{' '}
+              <NavLink to="/users">Users</NavLink>{' '}
             </li>
             <li className="cursor-pointer hover:text-purple-600">
               <NavLink to="/products">Products</NavLink>

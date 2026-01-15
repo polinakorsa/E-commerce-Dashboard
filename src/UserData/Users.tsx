@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 import TableHeaderUsers from './TableHeaderUsers.tsx';
 import CreateEditUserForm from './CreateEditUserForm.tsx';
-import Sidebar from './Sidebar.tsx';
+import Sidebar from '../Layout/Sidebar.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getUsersSuccess,
   getUsersError,
   getUsersLoading,
-} from './store/actions.ts';
+} from '../store/actions.ts';
 import User from './User.tsx';
+import Loading from '../Loading/Loading.tsx';
 
 const columns = ['First Name', 'Last Name', 'Age', 'Username'];
 
@@ -35,6 +36,7 @@ export default function Users() {
 
   return (
     <div className="max-w-5xl mx-auto my-12  bg-white rounded-xl">
+      {error && <p>Failed to load users</p>}
       <Sidebar />
 
       {isModalOpen && (
@@ -51,6 +53,10 @@ export default function Users() {
         {users.map((user: object) => (
           <User key={user.id} user={user} />
         ))}
+
+        <div className="flex items-center justify-center">
+          {loading && <Loading />}
+        </div>
       </ul>
     </div>
   );

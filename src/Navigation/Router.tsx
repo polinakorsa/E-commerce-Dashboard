@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Layout from './Layout';
-import Users from './Users';
-import Products from './Products';
-import Login from './Login';
-import ProtectedRoute from './ProtectedRoute';
+import Layout from '../Layout/Layout.tsx';
+import Users from '../UserData/Users.tsx';
+import Products from '../ProductsData/Products.tsx';
+import Login from '../Login/Login.tsx';
+import ProtectedRoute from './ProtectedRoute.tsx';
 
 export default function Router() {
   return (

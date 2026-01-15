@@ -4,6 +4,7 @@ const initialState = {
   loading: false,
   error: null,
   isModalOpen: false,
+  selectedUsers: [],
 };
 
 export default function usersReducer(state = initialState, action) {
@@ -50,11 +51,36 @@ export default function usersReducer(state = initialState, action) {
         data: state.data.map((user) =>
           user.id === action.payload.id ? action.payload : user
         ),
+        loading: false,
       };
     case 'CREATE_USER':
       return {
         ...state,
         data: [action.payload, ...state.data],
+        loading: false,
+      };
+    case 'USER_SELECTION':
+      return {
+        ...state,
+        selectedUsers: state.selectedUsers.includes(action.payload)
+          ? state.selectedUsers.filter((id) => id !== action.payload)
+          : [...state.selectedUsers, action.payload],
+      };
+    case 'BULK_USER_SELECTION':
+      return {
+        ...state,
+        selectedUsers:
+          state.selectedUsers.length === state.data.length
+            ? []
+            : state.data.map((user) => user.id),
+      };
+    case 'BULK_DELETE_USER_SELECTION':
+      return {
+        ...state,
+        data: state.data.filter(
+          (user) => !state.selectedUsers.includes(user.id)
+        ),
+        selectedUsers: [],
       };
     default:
       return state;

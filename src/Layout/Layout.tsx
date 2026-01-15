@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 import AbstractBackground from './AbstractBackground.tsx';
-import LogOutButton from './LogOutButton.tsx';
+import LogOutButton from '../Login/LogOutButton.tsx';
 import Footer from './Footer.tsx';
 
 export default function Layout() {
