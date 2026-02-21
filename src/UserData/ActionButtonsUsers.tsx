@@ -1,7 +1,7 @@
 import DeletePopUpUsers from '../Deletion/DeletePopUpUsers.tsx';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setActiveUser, toggleModalVisibility } from '../store/actions.ts';
+import { setActiveUser, toggleModalVisibility } from '../store/usersSlice.ts';
 import EditUserButton from '../assets/EditUserButton.tsx';
 import DeleteUserButton from '../assets/DeleteUserButton.tsx';
 
@@ -40,7 +40,9 @@ export default function ActionButtonsUsers({ user }) {
         <DeleteUserButton />
       </button>
 
-      {showDeletePopUp && <DeletePopUpUsers onCancel={closeDeletePopUp} />}
+      {showDeletePopUp && (
+        <DeletePopUpUsers user={user} onCancel={closeDeletePopUp} />
+      )}
     </div>
   );
 }

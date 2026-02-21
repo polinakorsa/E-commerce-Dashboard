@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  bulkProductsSelection,
-  deleteAllProductsSelection,
+  selectAllProducts,
   toggleModalVisibilityProduct,
-} from '../store/actions.ts';
+} from '../store/productsSlice.ts';
+import { deleteAllProductsThunk } from '../store/thunkProducts.ts';
 
 export default function TableHeaderProducts({ columns }) {
   const dispatch = useDispatch();
@@ -12,17 +12,17 @@ export default function TableHeaderProducts({ columns }) {
     dispatch(toggleModalVisibilityProduct());
   };
 
-  const products = useSelector((state) => state.productsReducer.dataProducts);
+  const products = useSelector((state) => state.productsSlice.dataProducts);
   const selectedProducts = useSelector(
-    (state) => state.productsReducer.selectedProducts
+    (state) => state.productsSlice.selectedProducts
   );
 
   const bulkDelete = () => {
-    dispatch(deleteAllProductsSelection(selectedProducts));
+    dispatch(deleteAllProductsThunk(selectedProducts));
   };
 
   const handleSelectAll = () => {
-    dispatch(bulkProductsSelection());
+    dispatch(selectAllProducts());
   };
 
   return (

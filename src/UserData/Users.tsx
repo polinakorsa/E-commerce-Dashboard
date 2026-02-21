@@ -4,10 +4,11 @@ import CreateEditUserForm from './CreateEditUserForm.tsx';
 import Sidebar from '../Layout/Sidebar.tsx';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  getUsersSuccess,
   getUsersError,
   getUsersLoading,
-} from '../store/actions.ts';
+  getUsersSuccess,
+} from '../store/usersSlice.ts';
+
 import User from './User.tsx';
 import Loading from '../Loading/Loading.tsx';
 
@@ -15,10 +16,10 @@ const columns = ['First Name', 'Last Name', 'Age', 'Username'];
 
 export default function Users() {
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.usersReducer.data);
-  const loading = useSelector((state) => state.usersReducer.loading);
-  const error = useSelector((state) => state.usersReducer.error);
-  const isModalOpen = useSelector((state) => state.usersReducer.isModalOpen);
+  const users = useSelector((state) => state.usersSlice.data);
+  const loading = useSelector((state) => state.usersSlice.loading);
+  const error = useSelector((state) => state.usersSlice.error);
+  const isModalOpen = useSelector((state) => state.usersSlice.isModalOpen);
 
   useEffect(() => {
     const getUsers = async () => {

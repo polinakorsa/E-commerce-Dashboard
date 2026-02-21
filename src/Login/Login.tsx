@@ -1,69 +1,41 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import AbstractBackground from '../Layout/AbstractBackground.tsx';
+import { api } from './Auth.tsx';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async (username, password) => {
-    const res = await fetch('https://dummyjson.com/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
+  const handleLogin = async (username: string, password: string) => {
+    try {
+      const { data } = await api.post('/auth/login', {
+        username,
+        password,
+        expiresInMins: 30,
+      });
 
-    if (!res.ok) {
-      console.log('Invalid username or password');
-      return;
+      localStorage.setItem('token', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      navigate('/users');
+    } catch (e) {
+      setError('Invalid username or password');
     }
-
-    const userData = await res.json();
-    localStorage.setItem('token', userData.accessToken);
-    localStorage.setItem('refreshToken', userData.refreshToken);
-
-    navigate('/users');
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    setError('');
+
     if (!username || !password) {
-      console.log('Missing credentials');
+      setError('Missing credentials');
       return;
     }
+
     handleLogin(username, password);
   };
-  //
-  // const handleRefresh = async () => {
-  //   const refreshToken = localStorage.getItem('refreshToken');
-  //
-  //   const res = await fetch('https://dummyjson.com/auth/refresh', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({
-  //       refreshToken,
-  //       expiresInMins: 30,
-  //     }),
-  //     credentials: 'include',
-  //   });
-  //
-  //   if (!res.ok) {
-  //     console.log('Unable to refresh session');
-  //     return;
-  //   }
-  //
-  //   const userData = await res.json();
-  //   localStorage.setItem('token', userData.accessToken);
-  //   localStorage.setItem('refreshToken', userData.refreshToken);
-  //
-  //   if (res.status === 401 || res.status === 403) {
-  //     localStorage.removeItem('token');
-  //     localStorage.removeItem('refreshToken');
-  //   }
-  //   return;
-  // };
 
   return (
     <>
@@ -79,6 +51,7 @@ export default function Login() {
             <p className="text-gray-600 mt-2">
               Sign in to continue to your account.
             </p>
+            {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">

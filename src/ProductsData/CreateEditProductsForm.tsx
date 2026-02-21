@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  createProduct,
-  editProduct,
-  getProductsError,
-  getProductsLoading,
   setActiveProduct,
   toggleModalVisibilityProduct,
-} from '../store/actions.ts';
+} from '../store/productsSlice.ts';
+import {
+  createProductThunk,
+  editProductThunk,
+} from '../store/thunkProducts.ts';
 
 export default function CreateEditProductsForm() {
   const dispatch = useDispatch();
   const activeProduct = useSelector(
-    (state) => state.productsReducer.activeProduct
+    (state) => state.productsSlice.activeProduct
   );
   const [product, setProduct] = useState(null);
 
@@ -25,42 +25,16 @@ export default function CreateEditProductsForm() {
         category: '',
         price: 0,
         rating: 0,
-        availabilityStatus: 'In Stock',
       });
     }
   }, [dispatch, activeProduct]);
 
-  const handleCreateProduct = async () => {
-    dispatch(getProductsLoading());
-    try {
-      const res = await fetch('https://dummyjson.com/products/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(product),
-      });
-
-      if (res.ok) {
-        const addedProduct = await res.json();
-        dispatch(createProduct(addedProduct));
-      }
-    } catch (error) {
-      dispatch(getProductsError(error));
-    }
+  const handleCreateProduct = () => {
+    dispatch(createProductThunk(product));
   };
 
-  const handleEditProduct = async () => {
-    dispatch(getProductsLoading());
-    try {
-      const res = await fetch(`https://dummyjson.com/products/${product.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(product),
-      });
-      const savedProduct = await res.json();
-      dispatch(editProduct(savedProduct));
-    } catch (error) {
-      dispatch(getProductsError(error));
-    }
+  const handleEditProduct = () => {
+    dispatch(editProductThunk(product));
   };
 
   const handleProductChange = (event) => {
@@ -71,7 +45,6 @@ export default function CreateEditProductsForm() {
           ? Number(event.target.value)
           : event.target.value,
     }));
-    console.log(event.target.value);
   };
 
   const handleSubmit = (event) => {
@@ -147,21 +120,6 @@ export default function CreateEditProductsForm() {
               type="number"
               name="rating"
               value={product?.rating}
-              onChange={handleProductChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl
-                                       focus:outline-none focus:ring-2 focus:ring-purple-500
-                                       focus:border-transparent transition"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Availability Status
-            </label>
-            <input
-              type="text"
-              name="availabilityStatusbrand"
-              value={product?.availabilityStatus}
               onChange={handleProductChange}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl
                                        focus:outline-none focus:ring-2 focus:ring-purple-500

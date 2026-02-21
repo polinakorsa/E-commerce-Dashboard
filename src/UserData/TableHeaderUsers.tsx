@@ -1,27 +1,22 @@
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  bulkUserSelection,
-  deleteALLUserSelection,
-  toggleModalVisibility,
-} from '../store/actions.ts';
+import { selectAllUsers, toggleModalVisibility } from '../store/usersSlice.ts';
+import { deleteAllUsersThunk } from '../store/thunkUsers.ts';
 
 export default function TableHeaderUsers({ columns }) {
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.usersReducer.data);
-  const selectedUsers = useSelector(
-    (state) => state.usersReducer.selectedUsers
-  );
+  const users = useSelector((state) => state.usersSlice.data);
+  const selectedUsers = useSelector((state) => state.usersSlice.selectedUsers);
+
+  const bulkDelete = () => {
+    dispatch(deleteAllUsersThunk(selectedUsers));
+  };
 
   const handleModalOpen = () => {
     dispatch(toggleModalVisibility());
   };
 
-  const bulkDelete = () => {
-    dispatch(deleteALLUserSelection(selectedUsers));
-  };
-
   const handleSelectAll = () => {
-    dispatch(bulkUserSelection());
+    dispatch(selectAllUsers());
   };
 
   return (

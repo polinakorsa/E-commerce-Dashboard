@@ -1,35 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  deleteProduct,
-  getProductsError,
-  getProductsLoading,
-} from '../store/actions.ts';
+import { deleteProductThunk } from '../store/thunkProducts.ts';
 
 export default function DeletePopUpProducts({ onCancel }) {
   const dispatch = useDispatch();
 
   const activeProduct = useSelector(
-    (state) => state.productsReducer.activeProduct
+    (state) => state.productsSlice.activeProduct
   );
 
-  const handleProductDeleteById = async () => {
-    dispatch(getProductsLoading());
-    try {
-      const res = await fetch(
-        `https://dummyjson.com/products/${activeProduct.id}`,
-        {
-          method: 'DELETE',
-        }
-      );
-
-      if (res.ok) {
-        const productToDelete = await res.json();
-        dispatch(deleteProduct(productToDelete.id));
-        onCancel();
-      }
-    } catch (error) {
-      dispatch(getProductsError(error));
-    }
+  const handleProductDeleteById = () => {
+    dispatch(deleteProductThunk(activeProduct));
+    onCancel();
   };
 
   return (

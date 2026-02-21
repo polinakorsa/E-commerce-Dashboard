@@ -1,11 +1,15 @@
-import { createStore, applyMiddleware } from 'redux';
-import reducers from './reducer.tsx';
+import { configureStore } from '@reduxjs/toolkit';
 import { createLogger } from 'redux-logger';
+import usersSlice from './usersSlice.ts';
+import productsSlice from './productsSlice.ts';
 
 const logger = createLogger({
   collapsed: true,
 });
 
-const store = createStore(reducers, applyMiddleware(logger));
+const store = configureStore({
+  reducer: { usersSlice, productsSlice },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+});
 
 export default store;

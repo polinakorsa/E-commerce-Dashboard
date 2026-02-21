@@ -1,21 +1,15 @@
 import { useEffect, useState } from 'react';
-import {
-  createUser,
-  editUser,
-  getUsersError,
-  getUsersLoading,
-  setActiveUser,
-  toggleModalVisibility,
-} from '../store/actions.ts';
+import { setActiveUser, toggleModalVisibility } from '../store/usersSlice.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../Loading/Loading.tsx';
+import { createUserThunk, editUserThunk } from '../store/thunkUsers.ts';
 
 export default function CreateEditUserForm() {
   const dispatch = useDispatch();
-  const activeUser = useSelector((state) => state.usersReducer.activeUser);
+  const activeUser = useSelector((state) => state.usersSlice.activeUser);
   const [user, setUser] = useState(null);
-  const loading = useSelector((state) => state.usersReducer.loading);
-  const error = useSelector((state) => state.usersReducer.error);
+  const loading = useSelector((state) => state.usersSlice.loading);
+  const error = useSelector((state) => state.usersSlice.error);
 
   useEffect(() => {
     if (activeUser) {
@@ -30,39 +24,12 @@ export default function CreateEditUserForm() {
     }
   }, [dispatch, activeUser]);
 
-  const handleCreateUser = async () => {
-    dispatch(getUsersLoading());
-    try {
-      const res = await fetch(`https://dummyjson.com/users/add`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
-      });
-
-      if (res.ok) {
-        const addedUser = await res.json();
-        dispatch(createUser(addedUser));
-      }
-    } catch (error) {
-      dispatch(getUsersError(error));
-    }
+  const handleCreateUser = () => {
+    dispatch(createUserThunk(user));
   };
 
-  const handleEditUser = async () => {
-    dispatch(getUsersLoading());
-    try {
-      const res = await fetch(`https://dummyjson.com/users/${user.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
-      });
-      if (res.ok) {
-        const savedUser = await res.json();
-        dispatch(editUser(savedUser));
-      }
-    } catch (error) {
-      dispatch(getUsersError(error));
-    }
+  const handleEditUser = () => {
+    dispatch(editUserThunk(user));
   };
 
   const handleUserChange = (event) => {

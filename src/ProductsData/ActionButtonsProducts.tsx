@@ -4,7 +4,7 @@ import DeleteProductButton from '../assets/DeleteProductButton.tsx';
 import {
   setActiveProduct,
   toggleModalVisibilityProduct,
-} from '../store/actions.ts';
+} from '../store/productsSlice.ts';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 

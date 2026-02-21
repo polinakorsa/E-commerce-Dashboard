@@ -1,29 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  deleteUser,
-  getUsersError,
-  getUsersLoading,
-} from '../store/actions.ts';
+import { useDispatch } from 'react-redux';
+import { deleteUserThunk } from '../store/thunkUsers.ts';
 
-export default function DeletePopUpUsers({ onCancel }) {
+export default function DeletePopUpUsers({ onCancel, user }) {
   const dispatch = useDispatch();
-  const activeUser = useSelector((state) => state.usersReducer.activeUser);
 
-  const handleUserDeleteById = async () => {
-    dispatch(getUsersLoading());
-    try {
-      const res = await fetch(`https://dummyjson.com/users/${activeUser.id}`, {
-        method: 'DELETE',
-      });
-
-      if (res.ok) {
-        const userToDelete = await res.json();
-        dispatch(deleteUser(userToDelete.id));
-        onCancel();
-      }
-    } catch (error) {
-      dispatch(getUsersError(error));
-    }
+  const handleUserDeleteById = () => {
+    dispatch(deleteUserThunk(user));
+    onCancel();
   };
 
   return (

@@ -7,18 +7,19 @@ import {
   getProductsError,
   getProductsLoading,
   getProductsSuccess,
-} from '../store/actions.ts';
+} from '../store/productsSlice.ts';
+
 import Loading from '../Loading/Loading.tsx';
 import Product from './Product.tsx';
 
-const columns = ['Title', 'Category', 'Price', 'Rating', 'AvailabilityStatus'];
+const columns = ['Title', 'Category', 'Price', 'Rating'];
 
 export default function Products() {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.productsReducer.dataProducts);
-  const loading = useSelector((state) => state.productsReducer.loading);
-  const error = useSelector((state) => state.productsReducer.error);
-  const isModalOpen = useSelector((state) => state.productsReducer.isModalOpen);
+  const products = useSelector((state) => state.productsSlice.dataProducts);
+  const loading = useSelector((state) => state.productsSlice.loading);
+  const error = useSelector((state) => state.productsSlice.error);
+  const isModalOpen = useSelector((state) => state.productsSlice.isModalOpen);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -35,7 +36,7 @@ export default function Products() {
   }, [dispatch]);
 
   return (
-    <div className="max-w-7xl mx-auto my-12  bg-white rounded-xl">
+    <div className="max-w-5xl mx-auto my-12  bg-white rounded-xl">
       {error && <p>Failed to load products</p>}
       <Sidebar />
 

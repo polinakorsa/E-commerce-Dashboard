@@ -1,15 +1,13 @@
 import ActionButtonsUsers from './ActionButtonsUsers.tsx';
 import { useDispatch, useSelector } from 'react-redux';
-import { userSelection } from '../store/actions.ts';
+import { selectUser } from '../store/usersSlice.ts';
 
 export default function User({ user }) {
   const dispatch = useDispatch();
-  const selectedUsers = useSelector(
-    (state) => state.usersReducer.selectedUsers
-  );
+  const selectedUsers = useSelector((state) => state.usersSlice.selectedUsers);
 
   const handleToggle = () => {
-    dispatch(userSelection(user.id));
+    dispatch(selectUser(user.id));
   };
 
   return (
