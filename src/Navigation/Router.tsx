@@ -7,7 +7,7 @@ import ProtectedRoute from './ProtectedRoute.tsx';
 
 export default function Router() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={'/ecommerce-dashboard/'}>
       <Routes>
         <Route path="/login" element={<Login />} />
 
