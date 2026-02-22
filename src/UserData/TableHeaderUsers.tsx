@@ -1,15 +1,18 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAllUsers, toggleModalVisibility } from '../store/usersSlice.ts';
 import { deleteAllUsersThunk } from '../store/thunkUsers.ts';
+import type { RootState } from '../store/store.tsx';
 
-export default function TableHeaderUsers({ columns }) {
+interface TableHeaderUsersProps {
+  columns: string[];
+}
+
+export default function TableHeaderUsers({ columns }: TableHeaderUsersProps) {
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.usersSlice.data);
-  const selectedUsers = useSelector((state) => state.usersSlice.selectedUsers);
-
-  const bulkDelete = () => {
-    dispatch(deleteAllUsersThunk(selectedUsers));
-  };
+  const users = useSelector((state: RootState) => state.usersSlice.data);
+  const selectedUsers = useSelector(
+    (state: RootState) => state.usersSlice.selectedUsers
+  );
 
   const handleModalOpen = () => {
     dispatch(toggleModalVisibility());
@@ -17,6 +20,10 @@ export default function TableHeaderUsers({ columns }) {
 
   const handleSelectAll = () => {
     dispatch(selectAllUsers());
+  };
+
+  const bulkDelete = () => {
+    dispatch(deleteAllUsersThunk(selectedUsers));
   };
 
   return (
@@ -32,7 +39,7 @@ export default function TableHeaderUsers({ columns }) {
         </div>
 
         <div className="flex gap-30 items-center text-xl text-gray-700 font-semibold">
-          {columns.map((column, index) => (
+          {columns.map((column: string, index: number) => (
             <span key={index}>{column}</span>
           ))}
         </div>

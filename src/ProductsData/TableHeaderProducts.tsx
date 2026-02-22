@@ -4,17 +4,26 @@ import {
   toggleModalVisibilityProduct,
 } from '../store/productsSlice.ts';
 import { deleteAllProductsThunk } from '../store/thunkProducts.ts';
+import type { RootState } from '../store/store.tsx';
 
-export default function TableHeaderProducts({ columns }) {
+interface TableHeaderProductsProps {
+  columns: string[];
+}
+
+export default function TableHeaderProducts({
+  columns,
+}: TableHeaderProductsProps) {
   const dispatch = useDispatch();
 
   const handleModalOpen = () => {
     dispatch(toggleModalVisibilityProduct());
   };
 
-  const products = useSelector((state) => state.productsSlice.dataProducts);
+  const products = useSelector(
+    (state: RootState) => state.productsSlice.dataProducts
+  );
   const selectedProducts = useSelector(
-    (state) => state.productsSlice.selectedProducts
+    (state: RootState) => state.productsSlice.selectedProducts
   );
 
   const bulkDelete = () => {

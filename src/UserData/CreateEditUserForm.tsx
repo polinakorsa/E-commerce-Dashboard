@@ -1,26 +1,37 @@
 import { useEffect, useState } from 'react';
-import { setActiveUser, toggleModalVisibility } from '../store/usersSlice.ts';
+import {
+  setActiveUser,
+  toggleModalVisibility,
+  type User,
+} from '../store/usersSlice.ts';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../Loading/Loading.tsx';
 import { createUserThunk, editUserThunk } from '../store/thunkUsers.ts';
+import type { RootState } from '../store/store.tsx';
+import * as React from 'react';
+
+const emptyUser: User = {
+  id: 0,
+  firstName: '',
+  lastName: '',
+  username: '',
+  age: 0,
+};
 
 export default function CreateEditUserForm() {
   const dispatch = useDispatch();
-  const activeUser = useSelector((state) => state.usersSlice.activeUser);
-  const [user, setUser] = useState(null);
-  const loading = useSelector((state) => state.usersSlice.loading);
-  const error = useSelector((state) => state.usersSlice.error);
+  const activeUser = useSelector(
+    (state: RootState) => state.usersSlice.activeUser
+  );
+  const [user, setUser] = useState<User>(emptyUser);
+  const loading = useSelector((state: RootState) => state.usersSlice.loading);
+  const error = useSelector((state: RootState) => state.usersSlice.error);
 
   useEffect(() => {
     if (activeUser) {
       setUser(activeUser);
     } else {
-      setUser({
-        firstName: '',
-        lastName: '',
-        age: 0,
-        username: '',
-      });
+      setUser(emptyUser);
     }
   }, [dispatch, activeUser]);
 
@@ -32,7 +43,7 @@ export default function CreateEditUserForm() {
     dispatch(editUserThunk(user));
   };
 
-  const handleUserChange = (event) => {
+  const handleUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUser((prevState) => ({
       ...prevState,
       [event.target.name]:
@@ -42,7 +53,7 @@ export default function CreateEditUserForm() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     if (user.id) {

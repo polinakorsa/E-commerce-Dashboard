@@ -7,7 +7,24 @@ import {
   deleteAllProductsThunk,
 } from './thunkProducts';
 
-const initialState = {
+export interface Product {
+  id: number;
+  title: string;
+  category: string;
+  price: number;
+  rating: number;
+}
+
+interface ProductsState {
+  dataProducts: Product[];
+  activeProduct: Product | null;
+  loading: boolean;
+  error: string | null;
+  isModalOpen: boolean;
+  selectedProducts: number[];
+}
+
+const initialState: ProductsState = {
   dataProducts: [],
   activeProduct: null,
   loading: false,
@@ -31,13 +48,12 @@ export const productsSlice = createSlice({
     },
 
     getProductsError: (state, action) => {
-      state.error = action.payload;
+      state.error = action.payload ?? null;
       state.loading = false;
     },
 
     toggleModalVisibilityProduct: (state) => {
       state.isModalOpen = !state.isModalOpen;
-      state.loading = false;
     },
 
     setActiveProduct: (state, action) => {
@@ -78,7 +94,7 @@ export const productsSlice = createSlice({
       })
       .addCase(createProductThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload ?? null;
       })
 
       .addCase(editProductThunk.pending, (state) => {
@@ -93,7 +109,7 @@ export const productsSlice = createSlice({
       })
       .addCase(editProductThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload ?? null;
       })
 
       .addCase(deleteProductThunk.pending, (state) => {
@@ -108,7 +124,7 @@ export const productsSlice = createSlice({
       })
       .addCase(deleteProductThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload ?? null;
       })
 
       .addCase(deleteAllProductsThunk.pending, (state) => {
@@ -125,7 +141,7 @@ export const productsSlice = createSlice({
       })
       .addCase(deleteAllProductsThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload ?? null;
       });
   },
 });

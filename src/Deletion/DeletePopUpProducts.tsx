@@ -1,15 +1,20 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { deleteProductThunk } from '../store/thunkProducts.ts';
+import type { Product } from '../store/productsSlice.ts';
 
-export default function DeletePopUpProducts({ onCancel }) {
+interface DeletionProductsProps {
+  onCancel: () => void;
+  product: Product;
+}
+
+export default function DeletePopUpProducts({
+  onCancel,
+  product,
+}: DeletionProductsProps) {
   const dispatch = useDispatch();
 
-  const activeProduct = useSelector(
-    (state) => state.productsSlice.activeProduct
-  );
-
   const handleProductDeleteById = () => {
-    dispatch(deleteProductThunk(activeProduct));
+    dispatch(deleteProductThunk(product));
     onCancel();
   };
 

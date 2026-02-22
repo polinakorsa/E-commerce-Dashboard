@@ -3,29 +3,40 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   setActiveProduct,
   toggleModalVisibilityProduct,
+  type Product,
 } from '../store/productsSlice.ts';
 import {
   createProductThunk,
   editProductThunk,
 } from '../store/thunkProducts.ts';
+import type { RootState } from '../store/store.tsx';
+import * as React from 'react';
+import Loading from '../Loading/Loading.tsx';
+
+const emptyProduct: Product = {
+  id: 0,
+  title: '',
+  category: '',
+  price: 0,
+  rating: 0,
+};
 
 export default function CreateEditProductsForm() {
   const dispatch = useDispatch();
   const activeProduct = useSelector(
-    (state) => state.productsSlice.activeProduct
+    (state: RootState) => state.productsSlice.activeProduct
   );
-  const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState<Product>(emptyProduct);
+  const loading = useSelector(
+    (state: RootState) => state.productsSlice.loading
+  );
+  const error = useSelector((state: RootState) => state.productsSlice.error);
 
   useEffect(() => {
     if (activeProduct) {
       setProduct(activeProduct);
     } else {
-      setProduct({
-        title: '',
-        category: '',
-        price: 0,
-        rating: 0,
-      });
+      setProduct(emptyProduct);
     }
   }, [dispatch, activeProduct]);
 
@@ -37,7 +48,7 @@ export default function CreateEditProductsForm() {
     dispatch(editProductThunk(product));
   };
 
-  const handleProductChange = (event) => {
+  const handleProductChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setProduct((prevState) => ({
       ...prevState,
       [event.target.name]:
@@ -47,7 +58,7 @@ export default function CreateEditProductsForm() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     if (product.id) {
@@ -66,6 +77,7 @@ export default function CreateEditProductsForm() {
   return (
     <div>
       <div className="p-10 md:p-16 flex flex-col justify-center">
+        {error && <p>Failed to edit or create user information</p>}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -148,6 +160,9 @@ export default function CreateEditProductsForm() {
             </button>
           </div>
         </form>
+        <div className="flex items-center justify-center">
+          {loading && <Loading />}
+        </div>
       </div>
     </div>
   );
