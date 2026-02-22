@@ -7,7 +7,7 @@ import ProtectedRoute from './ProtectedRoute.tsx';
 
 export default function Router() {
   return (
-    <HashRouter basename={'/E-commerce-Dashboard/'}>
+    <HashRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
 
