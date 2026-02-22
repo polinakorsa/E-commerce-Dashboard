@@ -11,15 +11,22 @@ import {
 
 import Loading from '../Loading/Loading.tsx';
 import Product from './Product.tsx';
+import type { RootState } from '../store/store.tsx';
 
 const columns = ['Title', 'Category', 'Price', 'Rating'];
 
 export default function Products() {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.productsSlice.dataProducts);
-  const loading = useSelector((state) => state.productsSlice.loading);
-  const error = useSelector((state) => state.productsSlice.error);
-  const isModalOpen = useSelector((state) => state.productsSlice.isModalOpen);
+  const products = useSelector(
+    (state: RootState) => state.productsSlice.dataProducts
+  );
+  const loading = useSelector(
+    (state: RootState) => state.productsSlice.loading
+  );
+  const error = useSelector((state: RootState) => state.productsSlice.error);
+  const isModalOpen = useSelector(
+    (state: RootState) => state.productsSlice.isModalOpen
+  );
 
   useEffect(() => {
     const getProducts = async () => {

@@ -9,17 +9,20 @@ import {
   getUsersSuccess,
 } from '../store/usersSlice.ts';
 
-import User from './User.tsx';
+import UserInformation from './UserInformation.tsx';
 import Loading from '../Loading/Loading.tsx';
+import type { RootState } from '../store/store.tsx';
 
 const columns = ['First Name', 'Last Name', 'Age', 'Username'];
 
 export default function Users() {
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.usersSlice.data);
-  const loading = useSelector((state) => state.usersSlice.loading);
-  const error = useSelector((state) => state.usersSlice.error);
-  const isModalOpen = useSelector((state) => state.usersSlice.isModalOpen);
+  const users = useSelector((state: RootState) => state.usersSlice.data);
+  const loading = useSelector((state: RootState) => state.usersSlice.loading);
+  const error = useSelector((state: RootState) => state.usersSlice.error);
+  const isModalOpen = useSelector(
+    (state: RootState) => state.usersSlice.isModalOpen
+  );
 
   useEffect(() => {
     const getUsers = async () => {
@@ -28,8 +31,10 @@ export default function Users() {
         const res = await fetch('https://dummyjson.com/users?limit=25');
         const data = await res.json();
         dispatch(getUsersSuccess(data.users));
-      } catch (error) {
-        dispatch(getUsersError(error));
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Failed to fetch users';
+        dispatch(getUsersError(message));
       }
     };
     getUsers();
@@ -51,8 +56,8 @@ export default function Users() {
       <TableHeaderUsers columns={columns} />
 
       <ul className="text-xl">
-        {users.map((user: object) => (
-          <User key={user.id} user={user} />
+        {users.map((user) => (
+          <UserInformation key={user.id} user={user} />
         ))}
 
         <div className="flex items-center justify-center">

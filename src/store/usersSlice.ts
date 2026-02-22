@@ -6,7 +6,24 @@ import {
   deleteAllUsersThunk,
 } from './thunkUsers';
 
-const initialState = {
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  age: number;
+  username: string;
+}
+
+interface UsersState {
+  data: User[];
+  activeUser: User | null;
+  loading: boolean;
+  error: string | null;
+  isModalOpen: boolean;
+  selectedUsers: number[];
+}
+
+const initialState: UsersState = {
   data: [],
   activeUser: null,
   loading: false,
@@ -30,13 +47,12 @@ export const usersSlice = createSlice({
     },
 
     getUsersError: (state, action) => {
-      state.error = action.payload;
+      state.error = action.payload ?? null;
       state.loading = false;
     },
 
     toggleModalVisibility: (state) => {
       state.isModalOpen = !state.isModalOpen;
-      state.loading = false;
     },
 
     setActiveUser: (state, action) => {
@@ -64,7 +80,6 @@ export const usersSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    // ← extraReducers is a sibling, not nested inside reducers
     builder
       .addCase(createUserThunk.pending, (state) => {
         state.loading = true;
@@ -76,7 +91,7 @@ export const usersSlice = createSlice({
       })
       .addCase(createUserThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload ?? null;
       })
 
       .addCase(editUserThunk.pending, (state) => {
@@ -91,7 +106,7 @@ export const usersSlice = createSlice({
       })
       .addCase(editUserThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload ?? null;
       })
 
       .addCase(deleteUserThunk.pending, (state) => {
@@ -104,7 +119,7 @@ export const usersSlice = createSlice({
       })
       .addCase(deleteUserThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload ?? null;
       })
 
       .addCase(deleteAllUsersThunk.pending, (state) => {
@@ -119,7 +134,7 @@ export const usersSlice = createSlice({
       })
       .addCase(deleteAllUsersThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload ?? null;
       });
   },
 });

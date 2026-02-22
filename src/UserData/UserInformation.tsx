@@ -1,24 +1,16 @@
 import ActionButtonsUsers from './ActionButtonsUsers.tsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectUser } from '../store/usersSlice.ts';
+import UserCheckbox from '../Checkboxes/userCheckbox.tsx';
+import type { User } from '../store/usersSlice';
 
-export default function User({ user }) {
-  const dispatch = useDispatch();
-  const selectedUsers = useSelector((state) => state.usersSlice.selectedUsers);
+interface UserProps {
+  user: User;
+}
 
-  const handleToggle = () => {
-    dispatch(selectUser(user.id));
-  };
-
+export default function UserInformation({ user }: UserProps) {
   return (
     <li className="grid grid-cols-[55px_250px_215px_160px_150px_150px] items-center py-8 px-6.5 hover:bg-gray-50 transition">
       <div className="flex justify-center">
-        <input
-          type="checkbox"
-          className=" w-6 h-6 cursor-pointer"
-          onChange={handleToggle}
-          checked={selectedUsers.includes(user.id)}
-        />
+        <UserCheckbox user={user} />
       </div>
 
       <div className="px-8 text-gray-900">{user.firstName}</div>

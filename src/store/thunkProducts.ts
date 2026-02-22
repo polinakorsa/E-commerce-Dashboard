@@ -1,75 +1,95 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import type { Product } from './productsSlice.ts';
+import type { RootState } from './store.ts';
 
-export const createProductThunk = createAsyncThunk(
-  'products/createProduct',
-  async (product, { rejectWithValue }) => {
-    try {
-      const res = await fetch('https://dummyjson.com/products/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(product),
-      });
-      return await res.json();
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+type NewProduct = Omit<Product, 'id'>;
+
+export const createProductThunk = createAsyncThunk<
+  Product,
+  NewProduct,
+  { rejectValue: string }
+>('products/createProduct', async (product, { rejectWithValue }) => {
+  try {
+    const res = await fetch('https://dummyjson.com/products/add', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(product),
+    });
+
+    return await res.json();
+  } catch (err: unknown) {
+    const message =
+      err instanceof Error ? err.message : 'Unknown network error';
+    return rejectWithValue(message);
   }
-);
+});
 
-export const editProductThunk = createAsyncThunk(
-  'products/editProduct',
-  async (product, { rejectWithValue }) => {
-    try {
-      const res = await fetch(`https://dummyjson.com/products/${product.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(product),
-      });
+export const editProductThunk = createAsyncThunk<
+  Product,
+  Product,
+  { rejectValue: string }
+>('products/editProduct', async (product: Product, { rejectWithValue }) => {
+  try {
+    const res = await fetch(`'https://dummyjson.com/products/${product.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(product),
+    });
 
-      const updatedProduct = await res.json();
-      return { ...product, ...updatedProduct };
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+    return await res.json();
+  } catch (err: unknown) {
+    const message =
+      err instanceof Error ? err.message : 'Unknown network error';
+    return rejectWithValue(message);
   }
-);
+});
 
-export const deleteProductThunk = createAsyncThunk(
-  'products/deleteProduct',
-  async (product, { rejectWithValue }) => {
-    try {
-      const res = await fetch(`https://dummyjson.com/products/${product.id}`, {
-        method: 'DELETE',
-      });
+export const deleteProductThunk = createAsyncThunk<
+  number,
+  { id: number },
+  { rejectValue: string }
+>('products/deleteProduct', async ({ id }, { rejectWithValue }) => {
+  try {
+    const res = await fetch(`https://dummyjson.com/products/${id}`, {
+      method: 'DELETE',
+    });
 
-      const deletedProduct = await res.json();
-      return deletedProduct.id;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+    const data = await res.json();
+    return data.id ?? id;
+  } catch (err: unknown) {
+    const message =
+      err instanceof Error ? err.message : 'Unknown network error';
+    return rejectWithValue(message);
   }
-);
+});
 
-export const deleteAllProductsThunk = createAsyncThunk(
+export const deleteAllProductsThunk = createAsyncThunk<
+  number[],
+  number[],
+  { rejectValue: string; state: RootState }
+>(
   'products/deleteAllProduct',
-  async (_, { getState, rejectWithValue }) => {
-    const { selectedProducts } = getState().productsSlice;
 
-    if (selectedProducts.length === 0) {
+  async (selectedProductsIds: number[], { rejectWithValue }) => {
+    if (selectedProductsIds.length === 0) {
       return [];
     }
 
     try {
       await Promise.all(
-        selectedProducts.map((id) =>
+        selectedProductsIds.map((id) =>
           fetch(`https://dummyjson.com/products/${id}`, {
             method: 'DELETE',
+          }).then((res) => {
+            return res.json();
           })
         )
       );
-      return selectedProducts;
-    } catch (error) {
-      return rejectWithValue(error.message);
+      return selectedProductsIds;
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : 'Unknown network error';
+      return rejectWithValue(message);
     }
   }
 );

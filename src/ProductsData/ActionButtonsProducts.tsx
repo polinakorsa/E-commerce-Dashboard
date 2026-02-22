@@ -7,8 +7,15 @@ import {
 } from '../store/productsSlice.ts';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import type { Product } from '../store/productsSlice.ts';
 
-export default function ActionButtonsProducts({ product }) {
+interface ActionButtonsProductsProps {
+  product: Product;
+}
+
+export default function ActionButtonsProducts({
+  product,
+}: ActionButtonsProductsProps) {
   const [showDeletePopUpProducts, setShowDeletePopUpProducts] = useState(false);
   const dispatch = useDispatch();
 
@@ -44,7 +51,10 @@ export default function ActionButtonsProducts({ product }) {
       </button>
 
       {showDeletePopUpProducts && (
-        <DeletePopUpProducts onCancel={closeDeletePopUpProducts} />
+        <DeletePopUpProducts
+          product={product}
+          onCancel={closeDeletePopUpProducts}
+        />
       )}
     </div>
   );

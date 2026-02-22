@@ -4,8 +4,13 @@ import { useDispatch } from 'react-redux';
 import { setActiveUser, toggleModalVisibility } from '../store/usersSlice.ts';
 import EditUserButton from '../assets/EditUserButton.tsx';
 import DeleteUserButton from '../assets/DeleteUserButton.tsx';
+import type { User } from '../store/usersSlice.ts';
 
-export default function ActionButtonsUsers({ user }) {
+interface ActionButtonsUsersProps {
+  user: User;
+}
+
+export default function ActionButtonsUsers({ user }: ActionButtonsUsersProps) {
   const [showDeletePopUp, setShowDeletePopUp] = useState(false);
   const dispatch = useDispatch();
 
