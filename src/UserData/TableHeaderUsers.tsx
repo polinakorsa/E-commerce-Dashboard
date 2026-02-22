@@ -1,14 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectAllUsers, toggleModalVisibility } from '../store/usersSlice.ts';
 import { deleteAllUsersThunk } from '../store/thunkUsers.ts';
-import type { RootState } from '../store/store.tsx';
+import { type RootState, useAppDispatch } from '../store/store.tsx';
 
 interface TableHeaderUsersProps {
   columns: string[];
 }
 
 export default function TableHeaderUsers({ columns }: TableHeaderUsersProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const users = useSelector((state: RootState) => state.usersSlice.data);
   const selectedUsers = useSelector(
     (state: RootState) => state.usersSlice.selectedUsers

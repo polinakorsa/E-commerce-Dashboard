@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../store/store';
 import { deleteProductThunk } from '../store/thunkProducts.ts';
 import type { Product } from '../store/productsSlice.ts';
 
@@ -11,7 +11,7 @@ export default function DeletePopUpProducts({
   onCancel,
   product,
 }: DeletionProductsProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleProductDeleteById = () => {
     dispatch(deleteProductThunk(product));
