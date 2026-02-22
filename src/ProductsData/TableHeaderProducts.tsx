@@ -1,10 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   selectAllProducts,
   toggleModalVisibilityProduct,
 } from '../store/productsSlice.ts';
 import { deleteAllProductsThunk } from '../store/thunkProducts.ts';
-import type { RootState } from '../store/store.tsx';
+import { type RootState, useAppDispatch } from '../store/store.tsx';
 
 interface TableHeaderProductsProps {
   columns: string[];
@@ -13,7 +13,7 @@ interface TableHeaderProductsProps {
 export default function TableHeaderProducts({
   columns,
 }: TableHeaderProductsProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleModalOpen = () => {
     dispatch(toggleModalVisibilityProduct());

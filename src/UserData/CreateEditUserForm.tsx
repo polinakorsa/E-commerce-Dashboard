@@ -4,10 +4,10 @@ import {
   toggleModalVisibility,
   type User,
 } from '../store/usersSlice.ts';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Loading from '../Loading/Loading.tsx';
 import { createUserThunk, editUserThunk } from '../store/thunkUsers.ts';
-import type { RootState } from '../store/store.tsx';
+import { type RootState, useAppDispatch } from '../store/store.tsx';
 import * as React from 'react';
 
 const emptyUser: User = {
@@ -19,7 +19,7 @@ const emptyUser: User = {
 };
 
 export default function CreateEditUserForm() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const activeUser = useSelector(
     (state: RootState) => state.usersSlice.activeUser
   );

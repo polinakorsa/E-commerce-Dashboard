@@ -9,8 +9,3 @@ createRoot(document.getElementById('root')!).render(
     <Router />
   </Provider>
 );
-
-//1. Store - y
-//2. Add store to react app - y
-//3. Reducer, action
-//4.

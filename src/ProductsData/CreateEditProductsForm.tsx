@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../store/store';
 import {
   setActiveProduct,
   toggleModalVisibilityProduct,
@@ -22,7 +23,7 @@ const emptyProduct: Product = {
 };
 
 export default function CreateEditProductsForm() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const activeProduct = useSelector(
     (state: RootState) => state.productsSlice.activeProduct
   );

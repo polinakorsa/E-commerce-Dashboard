@@ -1,6 +1,6 @@
-import { useDispatch } from 'react-redux';
 import { deleteUserThunk } from '../store/thunkUsers.ts';
 import type { User } from '../store/usersSlice.ts';
+import { useAppDispatch } from '../store/store.tsx';
 
 interface DeletionUserProps {
   onCancel: () => void;
@@ -11,7 +11,7 @@ export default function DeletePopUpUsers({
   onCancel,
   user,
 }: DeletionUserProps) {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const handleUserDeleteById = () => {
     dispatch(deleteUserThunk(user));
