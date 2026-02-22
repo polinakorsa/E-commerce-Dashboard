@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from '../Layout/Layout.tsx';
 import Users from '../UserData/Users.tsx';
 import Products from '../ProductsData/Products.tsx';
@@ -7,7 +7,7 @@ import ProtectedRoute from './ProtectedRoute.tsx';
 
 export default function Router() {
   return (
-    <BrowserRouter basename={'/E-commerce-Dashboard/'}>
+    <HashRouter basename={'/E-commerce-Dashboard/'}>
       <Routes>
         <Route path="/login" element={<Login />} />
 
@@ -20,6 +20,6 @@ export default function Router() {
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
